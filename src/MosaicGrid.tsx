@@ -59,7 +59,7 @@ const STATIC_TILES: FixedTile[] = [
   },
   {
     row: -1,
-    col: -2,
+    col: -1,
     width: 1,
     height: 1,
     color: 10,
