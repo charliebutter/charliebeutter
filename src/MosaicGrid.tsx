@@ -29,6 +29,8 @@ interface FixedTile {
   url?: string;
   altRow?: number;
   altCol?: number;
+  altWidth?: number;
+  altHeight?: number;
   fontSize?: number;
 }
 
@@ -43,7 +45,7 @@ const TILE_TYPES: TileType[] = [
   { width: 3, height: 2, weight: 0.02 }
 ];
 
-const NAVIGATION_TILES: FixedTile[] = [
+const STATIC_TILES: FixedTile[] = [
   {
     row: 1,
     col: 1,
@@ -56,59 +58,93 @@ const NAVIGATION_TILES: FixedTile[] = [
     fontSize: 1.6
   },
   {
-    row: 1,
-    col: 6,
-    width: 2,
-    height: 1,
-    color: 10,
-    text: "About",
-    altRow: 3,
-    altCol: 1,
-    fontSize: 1.3
-  },
-  {
-    row: 1,
-    col: 9,
-    width: 2,
-    height: 1,
-    color: 10,
-    text: "Projects",
-    altRow: 5,
-    altCol: 1,
-    fontSize: 1.3
-  },
-  {
-    row: 1,
-    col: 12,
-    width: 2,
-    height: 1,
-    color: 10,
-    text: "Contact",
-    altRow: 7,
-    altCol: 1,
-    fontSize: 1.3
-  },
-  {
     row: -1,
     col: -2,
     width: 1,
     height: 1,
     color: 10,
-    text: `v1.4`,
+    text: `v1.5`,
     fontSize: 1.0
   },
 ];
 
 const PAGE_SPECIFIC_TILES: Record<PageType, FixedTile[]> = {
-  home: [],
+  home: [
+    {
+      row: 1,
+      col: 6,
+      width: 2,
+      height: 1,
+      color: 10,
+      text: "About",
+      altRow: 3,
+      altCol: 1,
+      fontSize: 1.3
+    },
+    {
+      row: 1,
+      col: 9,
+      width: 2,
+      height: 1,
+      color: 10,
+      text: "Projects",
+      altRow: 5,
+      altCol: 1,
+      fontSize: 1.3
+    },
+  ],
   about: [
     // Add your about page specific tiles here
+    {
+      row: 1,
+      col: 6,
+      width: 5,
+      height: 1,
+      altRow: 3,
+      altCol: 1,
+      color: 10,
+      text: "Hey! I'm Charlie. I code stuff.",
+      fontSize: 1.1,
+    },
+    {
+      row: 1,
+      col: 12,
+      width: 2,
+      height: 1,
+      altRow: 5,
+      altCol: 1,
+      color: 10,
+      text: "My Github",
+      url: "https://www.github.com/charliebutter",
+      fontSize: 1.1,
+    },
   ],
   projects: [
     // Add your projects page specific tiles here
-  ],
-  contact: [
-    // Add your contact page specific tiles here
+    {
+      row: 1,
+      col: 6,
+      width: 5,
+      height: 1,
+      altRow: 3,
+      altCol: 1,
+      color: 10,
+      text: "Fantasy Name Generator",
+      url: "https://fantasy-names.charliebeutter.com/",
+      fontSize: 1.2,
+    },
+    {
+      row: 1,
+      col: 12,
+      width: 2,
+      height: 1,
+      altRow: 5,
+      altCol: 1,
+      color: 10,
+      text: "Circuits",
+      url: "https://circuits.charliebeutter.com",
+      fontSize: 1.2,
+    },
   ],
 };
 
@@ -198,10 +234,12 @@ class MosaicGenerator {
         if (fixedTile.altRow !== undefined && fixedTile.altCol !== undefined) {
           const normalizedAltRow = this.normalizeCoordinate(fixedTile.altRow, this.gridHeight - 1);
           const normalizedAltCol = this.normalizeCoordinate(fixedTile.altCol, this.gridWidth - 1);
+          const altWidth = fixedTile.altWidth !== undefined ? fixedTile.altWidth : fixedTile.width;
+          const altHeight = fixedTile.altHeight !== undefined ? fixedTile.altHeight : fixedTile.height;
 
-          if (!(normalizedAltCol + fixedTile.width <= this.gridWidth - 1 &&
-            normalizedAltRow + fixedTile.height <= this.gridHeight - 1 &&
-            this.canPlaceTile(normalizedAltRow, normalizedAltCol, fixedTile.width, fixedTile.height))) {
+          if (!(normalizedAltCol + altWidth <= this.gridWidth - 1 &&
+            normalizedAltRow + altHeight <= this.gridHeight - 1 &&
+            this.canPlaceTile(normalizedAltRow, normalizedAltCol, altWidth, altHeight))) {
             allAlternatesCanBePlaced = false;
             break;
           }
@@ -225,32 +263,40 @@ class MosaicGenerator {
       for (const fixedTile of this.fixedTiles) {
         let targetRow: number;
         let targetCol: number;
+        let targetWidth: number;
+        let targetHeight: number;
 
         if (allPrimaryCanBePlaced) {
-          // Use primary coordinates
+          // Use primary coordinates and dimensions
           targetRow = this.normalizeCoordinate(fixedTile.row, this.gridHeight - 1);
           targetCol = this.normalizeCoordinate(fixedTile.col, this.gridWidth - 1);
+          targetWidth = fixedTile.width;
+          targetHeight = fixedTile.height;
         } else {
-          // Use alternate coordinates if available, otherwise use primary
+          // Use alternate coordinates and dimensions if available, otherwise use primary
           if (fixedTile.altRow !== undefined && fixedTile.altCol !== undefined) {
             targetRow = this.normalizeCoordinate(fixedTile.altRow, this.gridHeight - 1);
             targetCol = this.normalizeCoordinate(fixedTile.altCol, this.gridWidth - 1);
+            targetWidth = fixedTile.altWidth !== undefined ? fixedTile.altWidth : fixedTile.width;
+            targetHeight = fixedTile.altHeight !== undefined ? fixedTile.altHeight : fixedTile.height;
           } else {
             targetRow = this.normalizeCoordinate(fixedTile.row, this.gridHeight - 1);
             targetCol = this.normalizeCoordinate(fixedTile.col, this.gridWidth - 1);
+            targetWidth = fixedTile.width;
+            targetHeight = fixedTile.height;
           }
         }
 
         // Place the tile if it fits
-        if (targetCol + fixedTile.width <= this.gridWidth - 1 &&
-          targetRow + fixedTile.height <= this.gridHeight - 1 &&
-          this.canPlaceTile(targetRow, targetCol, fixedTile.width, fixedTile.height)) {
-          this.placeTile(targetRow, targetCol, fixedTile.width, fixedTile.height);
+        if (targetCol + targetWidth <= this.gridWidth - 1 &&
+          targetRow + targetHeight <= this.gridHeight - 1 &&
+          this.canPlaceTile(targetRow, targetCol, targetWidth, targetHeight)) {
+          this.placeTile(targetRow, targetCol, targetWidth, targetHeight);
           tiles.push({
             row: targetRow,
             col: targetCol,
-            width: fixedTile.width,
-            height: fixedTile.height,
+            width: targetWidth,
+            height: targetHeight,
             id: `fixed-${targetRow}-${targetCol}-${Date.now()}-${Math.random()}`,
             color: fixedTile.color,
             text: fixedTile.text,
@@ -323,7 +369,7 @@ class MosaicGenerator {
   }
 }
 
-type PageType = 'home' | 'about' | 'projects' | 'contact';
+type PageType = 'home' | 'about' | 'projects';
 
 const MosaicGrid: React.FC = () => {
   const [tiles, setTiles] = useState<Tile[]>([]);
@@ -340,7 +386,7 @@ const MosaicGrid: React.FC = () => {
 
   const generateMosaic = useCallback((isRegeneration = false) => {
     const currentPageTiles = PAGE_SPECIFIC_TILES[currentPage] || [];
-    const allFixedTiles = [...NAVIGATION_TILES, ...currentPageTiles];
+    const allFixedTiles = [...STATIC_TILES, ...currentPageTiles];
     const generator = new MosaicGenerator(gridDimensions.width, gridDimensions.height, allFixedTiles);
     const newTiles = generator.generatePattern();
     setTiles(newTiles);
@@ -374,8 +420,8 @@ const MosaicGrid: React.FC = () => {
         }}
       >
         {tiles.map((tile, index) => {
-          const isNavigationTile = tile.text && NAVIGATION_TILES.some(navTile => navTile.text === tile.text);
-          const shouldAnimate = isInitialLoad || !isNavigationTile;
+          const isStaticTile = tile.text && STATIC_TILES.some(navTile => navTile.text === tile.text);
+          const shouldAnimate = isInitialLoad || !isStaticTile;
 
           const tileContent = (
             <>
@@ -400,9 +446,6 @@ const MosaicGrid: React.FC = () => {
             } else if (tile.text === "Projects") {
               setCurrentPage('projects');
               generateMosaic(true);
-            } else if (tile.text === "Contact") {
-              setCurrentPage('contact');
-              generateMosaic(true);
             } else if (tile.text === "Charlie Beutter") {
               setCurrentPage('home');
               generateMosaic(true);
@@ -414,13 +457,13 @@ const MosaicGrid: React.FC = () => {
           const tileElement = (
             <div
               key={tile.id}
-              className={`tile color-${tile.color} ${tile.url || tile.text === "About" || tile.text === "Projects" || tile.text === "Contact" || tile.text === "Charlie Beutter" ? 'clickable' : ''} ${shouldAnimate ? '' : 'no-animation'}`}
+              className={`tile color-${tile.color} ${tile.url || tile.text === "About" || tile.text === "Projects" || tile.text === "Charlie Beutter" ? 'clickable' : ''} ${tile.url ? 'has-url' : ''} ${shouldAnimate ? '' : 'no-animation'}`}
               style={{
                 gridColumn: `${tile.col + 1} / span ${tile.width}`,
                 gridRow: `${tile.row + 1} / span ${tile.height}`,
                 animationDelay: shouldAnimate ? `${index * 2}ms` : '0ms'
               }}
-              onClick={tile.url || tile.text === "About" || tile.text === "Projects" || tile.text === "Contact" || tile.text === "Charlie Beutter" ? handleTileClick : undefined}
+              onClick={tile.url || tile.text === "About" || tile.text === "Projects" || tile.text === "Charlie Beutter" ? handleTileClick : undefined}
             >
               {tileContent}
             </div>
