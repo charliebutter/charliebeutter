@@ -75,17 +75,53 @@ html, body {
   pointer-events: none;
 }
 
-/* Color variations */
-.color-1 { background-color: #1e3a8a; }
-.color-2 { background-color: #312e81; }
-.color-3 { background-color: #1e40af; }
-.color-4 { background-color: #7c3aed; }
-.color-5 { background-color: #2563eb; }
-.color-6 { background-color: #3730a3; }
-.color-7 { background-color: #4338ca; }
-.color-8 { background-color: #5b21b6; }
-.color-9 { background-color: #1a1f3a; }
-.color-10 { background-color: #252a47; }
+/* Home page colors (blue) */
+.home .color-1 { background-color: #1e3a8a; }
+.home .color-2 { background-color: #1e40af; }
+.home .color-3 { background-color: #2563eb; }
+.home .color-4 { background-color: #1d4ed8; }
+.home .color-5 { background-color: #3b82f6; }
+.home .color-6 { background-color: #2348b8; }
+.home .color-7 { background-color: #1c46d1; }
+.home .color-8 { background-color: #1a3489; }
+.home .color-9 { background-color: #1a2333; }
+.home .color-10 { background-color: #252d42; }
+
+/* About page colors (emerald green) */
+.about .color-1 { background-color: #22a353; }
+.about .color-2 { background-color: #1e8247; }
+.about .color-3 { background-color: #2db661; }
+.about .color-4 { background-color: #26a85c; }
+.about .color-5 { background-color: #34c770; }
+.about .color-6 { background-color: #1d7a44; }
+.about .color-7 { background-color: #1a6b3a; }
+.about .color-8 { background-color: #28b85e; }
+.about .color-9 { background-color: #202e20; }
+.about .color-10 { background-color: #2d372d; }
+
+/* Projects page colors (yellow/amber) */
+.projects .color-1 { background-color: #c28d12; }
+.projects .color-2 { background-color: #d07b16; }
+.projects .color-3 { background-color: #e69a1a; }
+.projects .color-4 { background-color: #edb332; }
+.projects .color-5 { background-color: #f0c649; }
+.projects .color-6 { background-color: #deb118; }
+.projects .color-7 { background-color: #cc8f14; }
+.projects .color-8 { background-color: #b5881a; }
+.projects .color-9 { background-color: #5c4a1a; }
+.projects .color-10 { background-color: #6b5424; }
+
+/* Contact page colors (muted purple/mauve) */
+.contact .color-1 { background-color: #7c3aed; }
+.contact .color-2 { background-color: #6d28d9; }
+.contact .color-3 { background-color: #8b5cf6; }
+.contact .color-4 { background-color: #8442f5; }
+.contact .color-5 { background-color: #9966ff; }
+.contact .color-6 { background-color: #6925d6; }
+.contact .color-7 { background-color: #5b21b6; }
+.contact .color-8 { background-color: #7537e8; }
+.contact .color-9 { background-color: #2a1a3a; }
+.contact .color-10 { background-color: #332a42; }
 
 @keyframes fadeIn {
   from {
