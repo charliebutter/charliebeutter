@@ -63,7 +63,7 @@ const FIXED_TILES: FixedTile[] = [
     color: 10,
     text: "Github",
     url: "https://github.com/charliebutter",
-    altRow: 3,
+    altRow: 7,
     altCol: 1,
     fontSize: 1.3
   },
@@ -75,6 +75,8 @@ const FIXED_TILES: FixedTile[] = [
     color: 10,
     text: "Fantasy Name Generator",
     url: "https://fantasy-names.charliebeutter.com",
+    altRow: 5,
+    altCol: 1,
     fontSize: 1.3
   },
   { 
@@ -85,6 +87,8 @@ const FIXED_TILES: FixedTile[] = [
     color: 10,
     text: "Circuits",
     url: "https://circuits.charliebeutter.com",
+    altRow: 3,
+    altCol: 1,
     fontSize: 1.3
   },
   { 
@@ -93,7 +97,7 @@ const FIXED_TILES: FixedTile[] = [
     width: 1, 
     height: 1, 
     color: 10,
-    text: `v1.2`,
+    text: `v1.3`,
     fontSize: 1.0
   },
 ];
