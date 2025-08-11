@@ -26,6 +26,8 @@ interface FixedTile {
   color: number;
   text?: string;
   url?: string;
+  altRow?: number;
+  altCol?: number;
 }
 
 const TILE_TYPES: TileType[] = [
@@ -46,7 +48,9 @@ const FIXED_TILES: FixedTile[] = [
     width: 4, 
     height: 1, 
     color: 9,
-    text: "Charlie Beutter"
+    text: "Charlie Beutter",
+    altRow: 3,
+    altCol: 1
   },
   { 
     row: 1, 
@@ -55,7 +59,9 @@ const FIXED_TILES: FixedTile[] = [
     height: 1, 
     color: 10,
     text: "Github",
-    url: "https://github.com/charliebutter"
+    url: "https://github.com/charliebutter",
+    altRow: 3,
+    altCol: 1
   },
   { 
     row: 1, 
@@ -64,7 +70,7 @@ const FIXED_TILES: FixedTile[] = [
     height: 1, 
     color: 10,
     text: "Fantasy Name Generator",
-    url: "https://fantasy-names.charliebeutter.com"
+    url: "https://fantasy-names.charliebeutter.com",
   },
   { 
     row: 1, 
@@ -73,7 +79,7 @@ const FIXED_TILES: FixedTile[] = [
     height: 1, 
     color: 10,
     text: "Circuits",
-    url: "https://circuits.charliebeutter.com"
+    url: "https://circuits.charliebeutter.com",
   },
 ];
 
@@ -135,9 +141,14 @@ class MosaicGenerator {
     this.resetGrid();
     const tiles: Tile[] = [];
 
-    // Place fixed tiles first
+    // Place fixed tiles first, trying primary coordinates first, then alternate coordinates
     for (const fixedTile of this.fixedTiles) {
-      if (this.canPlaceTile(fixedTile.row, fixedTile.col, fixedTile.width, fixedTile.height)) {
+      let placed = false;
+      
+      // Try primary coordinates first
+      if (fixedTile.col + fixedTile.width <= this.gridWidth - 1 && 
+          fixedTile.row + fixedTile.height <= this.gridHeight - 1 &&
+          this.canPlaceTile(fixedTile.row, fixedTile.col, fixedTile.width, fixedTile.height)) {
         this.placeTile(fixedTile.row, fixedTile.col, fixedTile.width, fixedTile.height);
         tiles.push({
           row: fixedTile.row,
@@ -149,6 +160,26 @@ class MosaicGenerator {
           text: fixedTile.text,
           url: fixedTile.url
         });
+        placed = true;
+      }
+      
+      // If primary coordinates failed and alternate coordinates exist, try alternate coordinates
+      if (!placed && fixedTile.altRow !== undefined && fixedTile.altCol !== undefined) {
+        if (fixedTile.altCol + fixedTile.width <= this.gridWidth - 1 && 
+            fixedTile.altRow + fixedTile.height <= this.gridHeight - 1 &&
+            this.canPlaceTile(fixedTile.altRow, fixedTile.altCol, fixedTile.width, fixedTile.height)) {
+          this.placeTile(fixedTile.altRow, fixedTile.altCol, fixedTile.width, fixedTile.height);
+          tiles.push({
+            row: fixedTile.altRow,
+            col: fixedTile.altCol,
+            width: fixedTile.width,
+            height: fixedTile.height,
+            id: `fixed-${fixedTile.altRow}-${fixedTile.altCol}-${Date.now()}-${Math.random()}`,
+            color: fixedTile.color,
+            text: fixedTile.text,
+            url: fixedTile.url
+          });
+        }
       }
     }
 
