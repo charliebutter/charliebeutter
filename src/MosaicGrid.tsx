@@ -16,6 +16,7 @@ interface Tile {
   color: number;
   text?: string;
   url?: string;
+  fontSize?: number;
 }
 
 interface FixedTile {
@@ -28,6 +29,7 @@ interface FixedTile {
   url?: string;
   altRow?: number;
   altCol?: number;
+  fontSize?: number;
 }
 
 const TILE_TYPES: TileType[] = [
@@ -50,7 +52,8 @@ const FIXED_TILES: FixedTile[] = [
     color: 9,
     text: "Charlie Beutter",
     altRow: 3,
-    altCol: 1
+    altCol: 1,
+    fontSize: 1.6
   },
   { 
     row: 1, 
@@ -61,25 +64,37 @@ const FIXED_TILES: FixedTile[] = [
     text: "Github",
     url: "https://github.com/charliebutter",
     altRow: 3,
-    altCol: 1
+    altCol: 1,
+    fontSize: 1.3
   },
   { 
     row: 1, 
     col: 9, 
-    width: 6, 
+    width: 5, 
     height: 1, 
     color: 10,
     text: "Fantasy Name Generator",
     url: "https://fantasy-names.charliebeutter.com",
+    fontSize: 1.3
   },
   { 
     row: 1, 
-    col: 16, 
-    width: 3, 
+    col: 15, 
+    width: 2, 
     height: 1, 
     color: 10,
     text: "Circuits",
     url: "https://circuits.charliebeutter.com",
+    fontSize: 1.3
+  },
+  { 
+    row: -1, 
+    col: 1, 
+    width: 1, 
+    height: 1, 
+    color: 10,
+    text: `v1.2`,
+    fontSize: 1.0
   },
 ];
 
@@ -95,6 +110,13 @@ class MosaicGenerator {
     this.fixedTiles = fixedTiles;
     this.grid = [];
     this.resetGrid();
+  }
+
+  private normalizeCoordinate(coordinate: number, dimension: number): number {
+    if (coordinate < 0) {
+      return dimension + coordinate;
+    }
+    return coordinate;
   }
 
   resetGrid() {
@@ -146,38 +168,46 @@ class MosaicGenerator {
       let placed = false;
       
       // Try primary coordinates first
-      if (fixedTile.col + fixedTile.width <= this.gridWidth - 1 && 
-          fixedTile.row + fixedTile.height <= this.gridHeight - 1 &&
-          this.canPlaceTile(fixedTile.row, fixedTile.col, fixedTile.width, fixedTile.height)) {
-        this.placeTile(fixedTile.row, fixedTile.col, fixedTile.width, fixedTile.height);
+      const normalizedRow = this.normalizeCoordinate(fixedTile.row, this.gridHeight - 1);
+      const normalizedCol = this.normalizeCoordinate(fixedTile.col, this.gridWidth - 1);
+      
+      if (normalizedCol + fixedTile.width <= this.gridWidth - 1 && 
+          normalizedRow + fixedTile.height <= this.gridHeight - 1 &&
+          this.canPlaceTile(normalizedRow, normalizedCol, fixedTile.width, fixedTile.height)) {
+        this.placeTile(normalizedRow, normalizedCol, fixedTile.width, fixedTile.height);
         tiles.push({
-          row: fixedTile.row,
-          col: fixedTile.col,
+          row: normalizedRow,
+          col: normalizedCol,
           width: fixedTile.width,
           height: fixedTile.height,
-          id: `fixed-${fixedTile.row}-${fixedTile.col}-${Date.now()}-${Math.random()}`,
+          id: `fixed-${normalizedRow}-${normalizedCol}-${Date.now()}-${Math.random()}`,
           color: fixedTile.color,
           text: fixedTile.text,
-          url: fixedTile.url
+          url: fixedTile.url,
+          fontSize: fixedTile.fontSize
         });
         placed = true;
       }
       
       // If primary coordinates failed and alternate coordinates exist, try alternate coordinates
       if (!placed && fixedTile.altRow !== undefined && fixedTile.altCol !== undefined) {
-        if (fixedTile.altCol + fixedTile.width <= this.gridWidth - 1 && 
-            fixedTile.altRow + fixedTile.height <= this.gridHeight - 1 &&
-            this.canPlaceTile(fixedTile.altRow, fixedTile.altCol, fixedTile.width, fixedTile.height)) {
-          this.placeTile(fixedTile.altRow, fixedTile.altCol, fixedTile.width, fixedTile.height);
+        const normalizedAltRow = this.normalizeCoordinate(fixedTile.altRow, this.gridHeight - 1);
+        const normalizedAltCol = this.normalizeCoordinate(fixedTile.altCol, this.gridWidth - 1);
+        
+        if (normalizedAltCol + fixedTile.width <= this.gridWidth - 1 && 
+            normalizedAltRow + fixedTile.height <= this.gridHeight - 1 &&
+            this.canPlaceTile(normalizedAltRow, normalizedAltCol, fixedTile.width, fixedTile.height)) {
+          this.placeTile(normalizedAltRow, normalizedAltCol, fixedTile.width, fixedTile.height);
           tiles.push({
-            row: fixedTile.altRow,
-            col: fixedTile.altCol,
+            row: normalizedAltRow,
+            col: normalizedAltCol,
             width: fixedTile.width,
             height: fixedTile.height,
-            id: `fixed-${fixedTile.altRow}-${fixedTile.altCol}-${Date.now()}-${Math.random()}`,
+            id: `fixed-${normalizedAltRow}-${normalizedAltCol}-${Date.now()}-${Math.random()}`,
             color: fixedTile.color,
             text: fixedTile.text,
-            url: fixedTile.url
+            url: fixedTile.url,
+            fontSize: fixedTile.fontSize
           });
         }
       }
@@ -276,7 +306,8 @@ const MosaicGrid: React.FC = () => {
                 <div 
                   className="tile-text"
                   style={{
-                    animationDelay: shouldAnimate ? `${index * 2 + 100}ms` : '0ms'
+                    animationDelay: shouldAnimate ? `${index * 2 + 100}ms` : '0ms',
+                    fontSize: tile.fontSize ? `${tile.fontSize}em` : undefined
                   }}
                 >
                   {tile.text}
