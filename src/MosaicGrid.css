@@ -1,15 +1,3 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  overflow: hidden;
-  width: 100vw;
-  height: 100vh;
-}
-
 .mosaic-container {
   position: fixed;
   top: 0;
@@ -21,7 +9,6 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
 .mosaic-grid {
@@ -40,7 +27,6 @@ html, body {
   border: 2px solid #0f0f0f;
   box-sizing: border-box;
   opacity: 0;
-  transform: scale(0.8);
   animation: fadeIn 0.6s ease forwards;
   position: relative;
   display: flex;
