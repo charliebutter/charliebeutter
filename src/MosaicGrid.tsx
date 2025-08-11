@@ -57,15 +57,6 @@ const STATIC_TILES: FixedTile[] = [
     altCol: 1,
     fontSize: 1.6
   },
-  {
-    row: -1,
-    col: -1,
-    width: 1,
-    height: 1,
-    color: 10,
-    text: `v1.5`,
-    fontSize: 1.0
-  },
 ];
 
 const PAGE_SPECIFIC_TILES: Record<PageType, FixedTile[]> = {
