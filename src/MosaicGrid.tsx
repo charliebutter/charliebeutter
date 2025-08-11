@@ -96,7 +96,7 @@ const FIXED_TILES: FixedTile[] = [
     col: 1, 
     width: 1, 
     height: 1, 
-    color: 9,
+    color: 10,
     text: `v1.3`,
     fontSize: 1.0
   },
